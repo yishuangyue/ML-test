@@ -9,7 +9,7 @@
 :Description:
 """
 
-from numpy import  ones, array, log
+from numpy import ones, array, log
 
 
 def loadDataSet():
@@ -75,14 +75,13 @@ def classifyNB(vec2Classify, pOVec, p1Vec, pClass1):
     :param pClass1: 类别为1时候的概率
     :return: 输入文档的类别
     """
-    p1 = sum(vec2Classify * p1Vec) +log(pClass1)  # 这里由于前面取对数 ln(a*b)=lna+lnb所以这里是+
-    p0 = sum(vec2Classify * pOVec) +log(1.0 - pClass1)  # 办元素相乘
-    print(p1,p0)
+    p1 = sum(vec2Classify * p1Vec) + log(pClass1)  # 这里由于前面取对数 ln(a*b)=lna+lnb所以这里是+
+    p0 = sum(vec2Classify * pOVec) + log(1.0 - pClass1)  # 办元素相乘
+    print(p1, p0)
     if p1 > p0:
         return 1
     else:
         return 0
-
 
 
 # main入口
@@ -96,7 +95,7 @@ if __name__ == '__main__':
     # 下面给出属于侮辱性文档的概率以及给定文档类别条件下词汇表中单次的出现概率向量。
     pOV, p1V, pAb = trainNBO(trainMat, listClasses)
     testEntry = ['love', 'my', 'dalmation']  # 测试句子
-    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))   # 返回测试句子的multi-hot向量
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))  # 返回测试句子的multi-hot向量
     print(testEntry, "classified as:", classifyNB(thisDoc, pOV, p1V, pAb))  # 计算不同类别下的条件概率
     testEntry = ['stupid', 'garbage']
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
