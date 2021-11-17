@@ -26,21 +26,21 @@ def mian_test():
     print("多项分布朴素贝叶斯，样本总数： %d 错误样本数 : %d"
           % (iris.data.shape[0], (iris.target != y_pred).sum()))
 
-# def mian_two():
-#     input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
-#     train_data, test_data, train_label, test_label = svm.data_deal(input_path)
-#     train_data = train_data[:, 1:]
-#     train_label = train_label[:, 0]  # flatmap一下
-#     clf = BernoulliNB()
-#     clf.fit(train_data, train_label)  # 训练 （数据，类别）
-#     y_pred = clf.predict(train_data)  # 预测
-#     print(y_pred)
-#     print("多项分布朴素贝叶斯，样本总数： %d 错误样本数 : %d"
-#           % (train_data.shape[0], (train_label != y_pred).sum()))
-#
+def mian_two():
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
+    train_data, test_data, train_label, test_label = svm.data_deal(input_path)
+    train_data = train_data[:, 1:]
+    train_label = train_label[:, 0]  # flatmap一下
+    clf = BernoulliNB()
+    clf.fit(train_data, train_label)  # 训练 （数据，类别）
+    y_pred = clf.predict(train_data)  # 预测
+    print(y_pred)
+    print("多项分布朴素贝叶斯，样本总数： %d 错误样本数 : %d"
+          % (train_data.shape[0], (train_label != y_pred).sum()))
+
 
 # main入口
 
 if __name__ == '__main__':
-    mian_test()
-    # mian_two()
+    # mian_test()
+    mian_two()
