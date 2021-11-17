@@ -86,7 +86,7 @@ def classifyNB(vec2Classify, pOVec, p1Vec, pClass1):
 
 # main入口
 if __name__ == '__main__':
-    listOPosts, listClasses = loadDataSet()  # 返回句子
+    listOPosts, listClasses = loadDataSet()  # 返回分词结果以及类别list
     myVocabList = createVocabList(listOPosts)  # 返回全量词集合
     setOfWords2Vec(myVocabList, listOPosts[0])  # 返回multi-hot向量
     trainMat = []
