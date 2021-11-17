@@ -79,9 +79,9 @@ def write_predict(x_pred, real, pred, output_path):
 # main入口
 
 if __name__ == '__main__':
-    input_path = '/Users/liting/Documents/python/Moudle/ml/svm/formatData.txt'
-    output_path = '/Users/liting/Documents/python/Moudle/ml/svm/Results.xlsx'
-    model_path = '/Users/liting/Documents/python/Moudle/ml/svm/train1_model.m'
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
+    output_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/Results.xlsx'
+    model_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/train1_model.m'
     train_data, test_data, train_label, test_label = data_deal(input_path)
     tra_label, tes_label = fit_svm(train_data, test_data, train_label, test_label, model_path)
     write_predict(test_data, test_label, tes_label, output_path)
