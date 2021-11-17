@@ -93,7 +93,7 @@ if __name__ == '__main__':
     for postinDoc in listOPosts:
         trainMat.append(setOfWords2Vec(myVocabList, postinDoc))
     # 下面给出属于侮辱性文档的概率以及给定文档类别条件下词汇表中单次的出现概率向量。
-    pOV, p1V, pAb = trainNBO(trainMat, listClasses)
+    pOV, p1V, pAb = trainNBO(trainMat, listClasses) # p0在给定文档类别条件下词汇表中单词的出现概率向量,
     testEntry = ['love', 'my', 'dalmation']  # 测试句子
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))  # 返回测试句子的multi-hot向量
     print(testEntry, "classified as:", classifyNB(thisDoc, pOV, p1V, pAb))  # 计算不同类别下的条件概率
