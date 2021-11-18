@@ -26,7 +26,7 @@ def createDataSet():
 # 2、计算熵，为该类数据分类最好使用数据字典来保存分类结果
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)
-    labelCounts = {}  # 创建记录不同分类标签结果多少的字典
+    labelCounts = {}  # 创建记录不同分类标签结果多少的字典 {'yes': 2, 'no': 3}
     # 为所有可能分类保存
     # 该字典key：label value:label的数目
     for featVec in dataSet:
@@ -41,8 +41,8 @@ def calcShannonEnt(dataSet):
     return shannonEnt  # 熵
 
 
-# 3、按特征划分数据
-def splitDataSet(dataSet, axis, value):  # axis代表第几个特征 value为结果
+# 3、按特征划分数据返回，第axis个特征下的等于value分类的数据集
+def splitDataSet(dataSet, axis, value):  # axis代表第几个特征 value为结果 splitDataSet(dataSet, 0, 0)
     # 避免修改原始数据集创建新数据集
     retDataSet = []
     # 抽取符合特征的数据集
@@ -54,7 +54,7 @@ def splitDataSet(dataSet, axis, value):  # axis代表第几个特征 value为结
     return retDataSet
 
 
-# 4、选择最优划分集
+# 4、选择最优划分集 ——》第几个特征是最好的用于划分数据集的特征
 # 选择最好的数据集划分方式
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1  # 全部特征
@@ -68,9 +68,11 @@ def chooseBestFeatureToSplit(dataSet):
         newEntropy = 0.0
         # 计算每种划分方式的信息熵
         for value in uniqueVals:
+            # print(dataSet, i, value)
             subDataSet = splitDataSet(dataSet, i, value)  # 划分
             prob = len(subDataSet) / float(len(dataSet))  # 同特征下不同回答所占总回答比率
             newEntropy += prob * calcShannonEnt(subDataSet)  # 该特征划分下的信息熵
+            # print(subDataSet, prob, newEntropy)
         infoGain = float(baseEntropy - newEntropy)  # 信息增益
         if (infoGain > bestInfoGain):
             bestInfoGain = infoGain
@@ -78,12 +80,12 @@ def chooseBestFeatureToSplit(dataSet):
     return bestFeature
 
 
-# 5、构造决策树
-
+# 5、构造决策树（选择当下特征结果下，最多的那个分类）
 def majorityCnt(classList):
     classCount = {}
     for vote in classList:
-        if vote not in classCount.key(): classCount[vote] = 0
+        if vote not in classCount.keys():
+            classCount[vote] = 0
         classCount[vote] += 1
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
@@ -94,17 +96,52 @@ def majorityCnt(classList):
 def createTree(dataSet, labels):
     classList = [example[-1] for example in dataSet]  # 保存标签
     if classList.count(classList[0]) == len(classList):  # 如果类别完全相同则停止划分
-        return classList[0]  # 返回出现次数最多的标签
-    if len(dataSet[0]) == 1:  # 遍历完所有特征时返回出现次数最多的类别
-        return majorityCnt(classList)
-    bestFeat = chooseBestFeatureToSplit(dataSet)
-    bestFeatLabel = labels[bestFeat]
-    myTree = {bestFeatLabel: {}}
+        return classList[0]  # #当类别完全相同时则停止继续划分，直接返回该类的标签
+    if len(dataSet[0]) == 1:  # #遍历完所有的特征时，仍然不能将数据集划分成仅包含唯一类别的分组 dataSet
+        return majorityCnt(classList)  # 由于无法简单的返回唯一的类标签，这里就返回出现次数最多的类别作为返回值
+    bestFeat = chooseBestFeatureToSplit(dataSet)  # 获取最好的分类特征索引
+    bestFeatLabel = labels[bestFeat]  # 获取该特征的名字
+    myTree = {bestFeatLabel: {}}  # 这里直接使用字典变量来存储树信息，这对于绘制树形图很重要。
     del (labels[bestFeat])  # 使用完该特征划掉
-    # 得到列表包含的所有属性值
+    #
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
     for value in uniqueVals:
         subLabels = labels[:]  # 划分后特征组
+        print(subLabels, value, bestFeatLabel)
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
     return myTree
+
+
+def classify(inputTree, featLabels, testVec):
+    firstStr = inputTree.keys()[0]
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index(firstStr)
+    key = testVec[featIndex]
+    valueOfFeat = secondDict[key]
+    if isinstance(valueOfFeat, dict):
+        classLabel = classify(valueOfFeat, featLabels, testVec)
+    else:
+        classLabel = valueOfFeat
+    return classLabel
+
+
+def storeTree(inputTree, filename):
+    import pickle
+    fw = open(filename, 'w')
+    pickle.dump(inputTree, fw)
+    fw.close()
+
+
+def grabTree(filename):
+    import pickle
+    fr = open(filename)
+    return pickle.load(fr)
+
+
+if __name__ == "__main__":
+    fr = open('play.tennies.txt')
+    lenses = [inst.strip().split(' ') for inst in fr.readlines()]
+    lensesLabels = ['outlook', 'temperature', 'huminidy', 'windy']
+    lensesTree = createTree(lenses, lensesLabels)
+    # treePlotter.createPlot(lensesTree)
