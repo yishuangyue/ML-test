@@ -43,7 +43,7 @@ def fit_svm(train_data, test_data, train_label, test_label):
     print("训练集准确率：", classifier.score(train_data, train_label))
     print("测试集精度：", classifier.score(test_data, test_label))
 
-    # or 也可直接调用accuracy_score方法计算准确率
+    # or 也可直接mi调用accuracy_score方法计算准确率
     tra_label = classifier.predict(train_data)  # 训练集的预测标签
     tes_label = classifier.predict(test_data)  # 测试集的预测标签
     print("训练集准确率：", accuracy_score(train_label, tra_label))
