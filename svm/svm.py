@@ -10,11 +10,9 @@
 """
 
 from sklearn import svm
-import numpy as np
 import xlsxwriter
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from Logistic.data_deal import data_deal
+from data_deal.data_deal import data_deal_func
 import joblib
 
 
@@ -78,14 +76,14 @@ def write_predict(x_pred, real, pred, output_path):
 # main入口
 
 if __name__ == '__main__':
-    # input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
+    # input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/formatData.txt'
     output_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/Results.xlsx'
     model_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/train1_model.m'
     # train_data, test_data, train_label, test_label = data_deal(input_path)
     # train_data = train_data[:, 1:]
     # test_data = test_data[:, 1:]
 
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/ods_data.json'
-    train_data, test_data, train_label, test_label = data_deal(input_path)
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
+    train_data, test_data, train_label, test_label = data_deal_func(input_path)
     tra_label, tes_label = fit_svm(train_data, test_data, train_label, test_label)
     # write_predict(test_data, test_label, tes_label, output_path)

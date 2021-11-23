@@ -11,13 +11,9 @@
 """
 # 导入数值计算的基础库
 import joblib
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns  # 画图库
 from sklearn.linear_model import LogisticRegression  ## 导入逻辑回归模型函数
-from sklearn.model_selection import train_test_split
 
-from data_deal import data_deal
+from data_deal.data_deal import data_deal_func
 # from svm import svm
 from sklearn.metrics import accuracy_score
 
@@ -80,9 +76,9 @@ def fit_model(x_fearures, y_label, test_data, test_lable):
 
 if __name__ == "__main__":
     # 1、构造数据集 这里直接调用svm中的数据
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/ods_data.json'
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
     model_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/train1_model.m'
-    train_data, test_data, train_label, test_label = data_deal(input_path)
+    train_data, test_data, train_label, test_label = data_deal_func(input_path)
     # train_data, test_data, train_label, test_label = svm.data_deal(input_path)
     x_fearures = train_data  # 将字符串转化为数值
     y_label = train_label[:, 0]  # flatmap一下

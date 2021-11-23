@@ -43,7 +43,7 @@ def null_data(df):
     return df_re
 
 
-def data_deal(path):
+def data_deal_func(path):
     # 1、读取数据并生成x,y的dataframe
     data_df = pd.read_json(path)
     ods_data = data_df["DATA"].str.split(':', expand=True)

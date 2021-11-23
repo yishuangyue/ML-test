@@ -19,14 +19,11 @@
 """
 import joblib
 from sklearn import tree
-from sklearn.datasets import load_wine
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-import pandas as pd
 import graphviz
 
 # 建立模型
-from Logistic.data_deal import data_deal
+from data_deal.data_deal import data_deal_func
 
 
 def fit_model(Xtrain, Xtest, Ytrain, Ytest, feature_name):
@@ -58,7 +55,7 @@ def fit_model(Xtrain, Xtest, Ytrain, Ytest, feature_name):
 
 
 if __name__ == "__main__":
-    model_path = '/DecisionTree/decisiontree1_model.m'
+    model_path = '/Users/liting/Documents/python/Moudle/ML-test/DecisionTree/decisiontree1_model.m'
     # 探索数据
     # wine = load_wine()
     # # wine.data.shape
@@ -73,8 +70,8 @@ if __name__ == "__main__":
     #                 '脯氨酸']
     # clf = fit_model(Xtrain, Xtest, Ytrain, Ytest, feature_name)
 
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/DecisionTree/ods_data.json'
-    train_data, test_data, train_label, test_label = data_deal(input_path)
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
+    train_data, test_data, train_label, test_label = data_deal_func(input_path)
     train_label = train_label[:, 0]  # flatmap一下
     test_label = test_label[:, 0]
     feature_name = ['责令限期违规标志', '同法人状态非正常标志', '连续三月未申报标志', '身份证标志', '纳税人无销方信息标志'

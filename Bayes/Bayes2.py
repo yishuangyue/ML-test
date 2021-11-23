@@ -17,8 +17,7 @@ import joblib
 from sklearn import datasets
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from Logistic.data_deal import data_deal
-from svm import svm
+from data_deal.data_deal import data_deal_func
 
 
 def mian_test():
@@ -50,12 +49,12 @@ def mian_two(x_fearures, y_label, test_data, test_lable):
 
 if __name__ == '__main__':
     model_path = '/Users/liting/Documents/python/Moudle/ML-test/Bayes/bayes2_model.m'
-    # input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
+    # input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/formatData.txt'
     # train_data, test_data, train_label, test_label = svm.data_deal(input_path)
     # train_data = train_data[:, 1:]
     # train_label = train_label[:, 0]  # flatmap一下
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/ods_data.json'
-    train_data, test_data, train_label, test_label = data_deal(input_path)
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
+    train_data, test_data, train_label, test_label = data_deal_func(input_path)
     train_label = train_label[:, 0]  # flatmap一下
     test_label = test_label[:, 0]
     # mian_test()
