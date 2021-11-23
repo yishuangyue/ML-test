@@ -14,22 +14,21 @@ import numpy as np
 import xlsxwriter
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from Logistic.data_deal import data_deal
 import joblib
 
 
-def data_deal(path):
-    # 1.读取数据集
-    data = np.loadtxt(path, dtype=str, delimiter=",")
-    # 2.划分数据与标签
-    x, y = np.split(data, indices_or_sections=(5,), axis=1)  # x为数据，y为标签
-    train_data, test_data, train_label, test_label = train_test_split(x, y, random_state=1, train_size=0.6,
-                                                                      test_size=0.4)
-    return train_data, test_data, train_label, test_label
+# def data_deal(path):
+#     # 1.读取数据集
+#     data = np.loadtxt(path, dtype=str, delimiter=",")
+#     # 2.划分数据与标签
+#     x, y = np.split(data, indices_or_sections=(5,), axis=1)  # x为数据，y为标签
+#     train_data, test_data, train_label, test_label = train_test_split(x, y, random_state=1, train_size=0.6,
+#                                                                       test_size=0.4)
+#     return train_data, test_data, train_label, test_label
 
 
-def fit_svm(train_data, test_data, train_label, test_label, model_path):
-    train_data = train_data[:, 1:]
-    test_data = test_data[:, 1:]
+def fit_svm(train_data, test_data, train_label, test_label):
     # print(train_data.shape)
     # 3.训练svm分类器
     classifier = svm.SVC(C=2, kernel='rbf', gamma=8, decision_function_shape='ovo')  # rbf:高斯核函数
@@ -41,16 +40,16 @@ def fit_svm(train_data, test_data, train_label, test_label, model_path):
     # print("加载模型完毕\n")
 
     # 4.计算svc分类器的准确率
-    print("训练集：", classifier.score(train_data, train_label))
-    print("测试集：", classifier.score(test_data, test_label))
+    print("训练集准确率：", classifier.score(train_data, train_label))
+    print("测试集精度：", classifier.score(test_data, test_label))
 
     # or 也可直接调用accuracy_score方法计算准确率
     tra_label = classifier.predict(train_data)  # 训练集的预测标签
     tes_label = classifier.predict(test_data)  # 测试集的预测标签
-    print("训练集：", accuracy_score(train_label, tra_label))
-    print("测试集：", accuracy_score(test_label, tes_label))
+    print("训练集准确率：", accuracy_score(train_label, tra_label))
+    print("测试集精度：", accuracy_score(test_label, tes_label))
     # 查看决策函数
-    # print('train_decision_function:\n',classifier.decision_function(train_data)) # (90,3)
+    # print('train_decis 1ion_function:\n',classifier.decision_function(train_data)) # (90,3)
     # print('predict_result:\n', classifier.predict(train_data))
     return tra_label, tes_label
 
@@ -79,9 +78,14 @@ def write_predict(x_pred, real, pred, output_path):
 # main入口
 
 if __name__ == '__main__':
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
+    # input_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/formatData.txt'
     output_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/Results.xlsx'
     model_path = '/Users/liting/Documents/python/Moudle/ML-test/svm/train1_model.m'
+    # train_data, test_data, train_label, test_label = data_deal(input_path)
+    # train_data = train_data[:, 1:]
+    # test_data = test_data[:, 1:]
+
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/ods_data.json'
     train_data, test_data, train_label, test_label = data_deal(input_path)
-    tra_label, tes_label = fit_svm(train_data, test_data, train_label, test_label, model_path)
-    write_predict(test_data, test_label, tes_label, output_path)
+    tra_label, tes_label = fit_svm(train_data, test_data, train_label, test_label)
+    # write_predict(test_data, test_label, tes_label, output_path)
