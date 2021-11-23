@@ -58,7 +58,7 @@ def fit_model(Xtrain, Xtest, Ytrain, Ytest, feature_name):
 
 
 if __name__ == "__main__":
-    model_path = '/Users/liting/Documents/python/Moudle/ML-test/Bayes/decisiontree1_model.m'
+    model_path = '/DecisionTree/decisiontree1_model.m'
     # 探索数据
     # wine = load_wine()
     # # wine.data.shape
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     #                 '脯氨酸']
     # clf = fit_model(Xtrain, Xtest, Ytrain, Ytest, feature_name)
 
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/Logistic/ods_data.json'
+    input_path = '/Users/liting/Documents/python/Moudle/ML-test/DecisionTree/ods_data.json'
     train_data, test_data, train_label, test_label = data_deal(input_path)
     train_label = train_label[:, 0]  # flatmap一下
     test_label = test_label[:, 0]
