@@ -11,7 +11,7 @@
 """
 # 导入数值计算的基础库
 import joblib
-from sklearn.linear_model import LogisticRegression  ## 导入逻辑回归模型函数
+from sklearn.linear_model import LogisticRegression  # 导入逻辑回归模型函数
 
 from data_deal.data_deal import data_deal_func
 # from svm import svm

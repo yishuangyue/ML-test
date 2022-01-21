@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # train_data = train_data[:, 1:]
     # test_data = test_data[:, 1:]
 
-    input_path = '/Users/liting/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
+    input_path = '/Users/litin  g/Documents/python/Moudle/ML-test/data_deal/ods_data.json'
     train_data, test_data, train_label, test_label = data_deal_func(input_path)
     tra_label, tes_label = fit_svm(train_data, test_data, train_label, test_label)
     # write_predict(test_data, test_label, tes_label, output_path)

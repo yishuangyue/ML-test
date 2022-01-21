@@ -25,7 +25,7 @@ def createDataSet():
 
 # 2、计算熵，为该类数据分类最好使用数据字典来保存分类结果
 def calcShannonEnt(dataSet):
-    numEntries = len(dataSet)
+    numEntries = len(dataSet)  # 样本数量
     labelCounts = {}  # 创建记录不同分类标签结果多少的字典 {'yes': 2, 'no': 3}
     # 为所有可能分类保存
     # 该字典key：label value:label的数目
@@ -38,6 +38,7 @@ def calcShannonEnt(dataSet):
     for key in labelCounts:
         prob = float(labelCounts[key]) / numEntries  # 标签发生概率p(xi)的值
         shannonEnt -= prob * log(prob, 2)
+    print("样本集{},的基础熵为：{}".format(dataSet,shannonEnt))
     return shannonEnt  # 熵
 
 
@@ -57,13 +58,16 @@ def splitDataSet(dataSet, axis, value):  # axis代表第几个特征 value为结
 # 4、选择最优划分集 ——》第几个特征是最好的用于划分数据集的特征
 # 选择最好的数据集划分方式
 def chooseBestFeatureToSplit(dataSet):
-    numFeatures = len(dataSet[0]) - 1  # 全部特征
+    numFeatures = len(dataSet[0]) - 1  # 全部特征个数
+    print("dataSet:{}".format(dataSet))
     baseEntropy = calcShannonEnt(dataSet)  # 基础熵
+    print("第一步计算基础熵（基于不同分类下熵总和）：{}".format(baseEntropy))
     bestInfoGain = 0.0
     bestFeature = -1
     for i in range(numFeatures):
         # 创建唯一的分类标签列表
         featList = [example[i] for example in dataSet]
+        print("featList:{}".format(featList))
         uniqueVals = set(featList)  # 建立列表同特征下不同回答
         newEntropy = 0.0
         # 计算每种划分方式的信息熵
@@ -72,11 +76,15 @@ def chooseBestFeatureToSplit(dataSet):
             subDataSet = splitDataSet(dataSet, i, value)  # 划分
             prob = len(subDataSet) / float(len(dataSet))  # 同特征下不同回答所占总回答比率
             newEntropy += prob * calcShannonEnt(subDataSet)  # 该特征划分下的信息熵
-            # print(subDataSet, prob, newEntropy)
+            print("第{}个特征下信息熵为{}".format(i,calcShannonEnt(subDataSet)))
+            print("第{}个特征下值为{}后剩下特征的dataset为{}, 特征的经验条件熵{}, 该特征划分下的信息熵:{}".format(i,value,subDataSet, prob, newEntropy) )
         infoGain = float(baseEntropy - newEntropy)  # 信息增益
+        print("信息增益:{}".format(infoGain))
+        print("infoGain:{},{},{}".format(infoGain,bestInfoGain,baseEntropy))
         if (infoGain > bestInfoGain):
             bestInfoGain = infoGain
             bestFeature = i
+    print("返回bestFeature：{}".format(bestFeature))
     return bestFeature
 
 
@@ -110,6 +118,7 @@ def createTree(dataSet, labels):
         subLabels = labels[:]  # 划分后特征组
         print(subLabels, value, bestFeatLabel)
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
+        print("myTree：{}".format(myTree))
     return myTree
 
 
@@ -140,8 +149,9 @@ def grabTree(filename):
 
 
 if __name__ == "__main__":
-    fr = open('play.tennies.txt')
-    lenses = [inst.strip().split(' ') for inst in fr.readlines()]
-    lensesLabels = ['outlook', 'temperature', 'huminidy', 'windy']
-    lensesTree = createTree(lenses, lensesLabels)
+    # fr = open('play.tennies.txt')
+    # lenses = [inst.strip().split(' ') for inst in fr.readlines()]
+    # lensesLabels = ['outlook', 'temperature', 'huminidy', 'windy']
+    dataSet, labels=createDataSet()
+    lensesTree = createTree(dataSet, labels)
     # treePlotter.createPlot(lensesTree)
