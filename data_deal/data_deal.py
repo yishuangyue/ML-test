@@ -11,7 +11,6 @@
 """
 
 import pandas as pd
-from sklearn.impute import SimpleImputer
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split

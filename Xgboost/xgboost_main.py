@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os,joblib,sys
-# sys.path.append("/opt/liting/ML_project/ItemClassfi/")
-# sys.path.append("/Users/liting/Documents/python/Moudle/ML_project/ItemClassfi/")
+# sys.path.append("/opt/liting/ML-test/")
+# sys.path.append("/Users/liting/Documents/python/Moudle/ML-test/")
 import operator
 import  xgboost as xgb
 import pandas as pd
@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score
 from xgboost import plot_importance,XGBClassifier
 
 from data_deal.data_deal import data_deal_func
-from data_utils import log_creater
 
 
 class XGB():
@@ -80,20 +79,22 @@ class XGB():
 
         # # 3、指定不同学习率得到输出参数,结合网格搜素调参，XGBoost结合sklearn网格搜索调参
         parameters = {
-              'max_depth': [5, 7, 10, 13, 15],
-              'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2],
-              'n_estimators': [10, 15, 25, 30],
-              'min_child_weight': [0, 1, 3, 5, 8],
-              'max_delta_step': [0, 0.2, 0.6, 1, 2],
-              'subsample': [0.6, 0.7, 0.8, 0.85, 0.95],
-              'colsample_bytree': [0.5, 0.6, 0.7, 0.8, 0.9],
+              'max_depth': [5, 7, 8, 10, 13],
+              'learning_rate': [0.02, 0.05, 0.1, 0.2,0.3],
+              # 'n_estimators': [30, 40, 50, 80 ],
+              # 'min_child_weight': [0, 1, 3, 5, 8],
+              # 'max_delta_step': [0, 0.2, 0.6, 1, 2],
+              # 'subsample': [0.6, 0.7, 0.8, 0.85, 0.95],
+              # 'colsample_bytree': [0.5, 0.6, 0.7, 0.8, 0.9],
               'reg_alpha': [0, 0.25, 0.5, 0.75, 1],
-              'reg_lambda': [0.2, 0.4, 0.6, 0.8, 1],
-              'scale_pos_weight': [0.2, 0.4, 0.6, 0.8, 1]}
+              # 'reg_lambda': [0.2, 0.4, 0.6, 0.8, 1],
+              # 'scale_pos_weight': [0.2, 0.4, 0.6, 0.8, 1]
+        }
         model = xgb.XGBClassifier(max_depth=5, # 最大深度
                     learning_rate=0.01,   # 学习率
-                    n_estimators=10,    #总共迭代的次数，即决策树的个数多给点
+                    n_estimators=30,    #总共迭代的次数，即决策树的个数多给点
                     objective='binary:logistic', # 损失函数
+                    eval_metric="error",
                     gamma=0,  # 惩罚项系数，指定节点分裂所需的最小损失函数下降值
                     min_child_weight=1, #  叶子节点最小权重;默认值为1;调参：值越大，越容易欠拟合
                     max_delta_step=0,
@@ -103,22 +104,24 @@ class XGB():
                     reg_alpha=0,      # 正则化系数
                     reg_lambda=1,     # 正则化系数
                     seed=0)
-        grid_search = GridSearchCV(estimator=model, param_grid=parameters, scoring='accuracy', cv=3,verbose=1)
+        grid_search = GridSearchCV(estimator=model, param_grid=parameters, scoring='neg_log_loss', cv=3,n_jobs=-1)
         # cv交叉验证参数，默认None，使用三折交叉验证。指定fold数量，默认为3，也可以是yield训练/测试数据的生成器。
         # scoring:模型评价标准
         # verbose :0：不输出训练过程，1：偶尔输出
+        #n_iter=300，训练300次，数值越大，获得的参数精度越大，但是搜索时间越长
+        #n_jobs = -1，使用所有的CPU进行训练，默认为1，使用1个CPU
         grid_search.fit(X_train, train_lable)
 
-        log.info("Best score: %0.3f" % grid_search.best_score_)
-        log.info("Best parameters set: %s" % grid_search.best_params_ )
+        print("Best score: %0.3f" % grid_search.best_score_)
+        print("Best parameters set: %s" % grid_search.best_params_ )
         model = grid_search.best_estimator_
-        log.info("grid.best_estimator_:", grid_search.best_estimator_)
+        print("grid.best_estimator_:", grid_search.best_estimator_)
         model.fit(X_train,train_lable)
 
 
         # # 保存模型(两个)
         model.save_model(self.clf_path)
-        model.dump_model(tree_path)  # 保存树结构
+        # model.dump_model(tree_path)  # 保存树结构
         joblib.dump(self.vec, self.vec_path)
         return model
 
@@ -140,7 +143,6 @@ if __name__ == '__main__':
     XGB = XGB(vec_path=vecmodel_path, clf_path=clfmodel_path,output_path=output_path, if_load=0)
 
     # _______创建日志
-    log = log_creater(log_path)
     # 2、载入训练数据与预测数据
     X_train, X_test, train_label, test_label = data_deal_func(data_path)
 
@@ -148,11 +150,11 @@ if __name__ == '__main__':
 
     train_lable=train_label[:,0].astype("int")
     test_lable=test_label[:,0].astype("int")
-    log.info("训练集测试集生成好了")
+    print("训练集测试集生成好了")
     # 3、训练并预测分类正确性
     trainXGB = XGB.trainXGB(X_train, train_lable,X_test, test_label)
     xgb.to_graphviz(trainXGB, num_trees=1)
-    log.info("模型训练并保存好了")
+    print("模型训练并保存好了")
 
 
     #4\预测Predict training set:f
@@ -160,15 +162,15 @@ if __name__ == '__main__':
     train_pred = trainXGB.predict(X_train)
     train_pred=pd.DataFrame(train_pred).applymap(lambda x:0 if x<0.5 else 1)
     # pred = trainXGB.predict(X_test) #
-    log.info("训练集准确率：%s" % accuracy_score(train_lable, train_pred))
+    print("训练集准确率：%s" % accuracy_score(train_lable, train_pred))
     # pred = trainXGB.predict(xgb.DMatrix(X_test)) #
     pred = trainXGB.predict(X_test)
     pred=pd.DataFrame(pred).applymap(lambda x:0 if x<0.5 else 1)
-    log.info("测试集准确率：%s" % accuracy_score(test_lable, pred))
-    importance = trainXGB.get_score(importance_type='gain')
-    sorted_importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
-    log.info('feature importances[gain]:')
-    log.info(sorted_importance[0:5])
+    print("测试集准确率：%s" % accuracy_score(test_lable, pred))
+    # importance = trainXGB.get_score(importance_type='gain')
+    # sorted_importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
+    print('feature importances[gain]:')
+    # print(sorted_importance[0:5])
 
 
     # 5、显示重要特征
